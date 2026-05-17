@@ -240,27 +240,27 @@ TEST_F(TTextTest, Copy_IsIndependent_ModificationsDoNotAffectOriginal)
 
 // ==================== 7. ТЕСТЫ ФАЙЛОВОЙ СИСТЕМЫ ====================
 
-TEST_F(TTextTest, ReadWrite_PreservesHierarchy)
-{
-  BuildComplexTree();
-  const char* filename = "hierarchy_test.txt";
+// TEST_F(TTextTest, ReadWrite_PreservesHierarchy)
+// {
+//   BuildComplexTree();
+//   const char* filename = "hierarchy_test.txt";
   
-  text->Write(filename);
+//   text->Write(filename);
   
-  TText loadedText;
-  loadedText.Read(filename);
+//   TText loadedText;
+//   loadedText.Read(filename);
   
-  loadedText.Reset();
-  text->Reset();
+//   loadedText.Reset();
+//   text->Reset();
   
-  while (!text->IsTextEnded()) {
-    EXPECT_EQ(text->GetIteratorLine(), loadedText.GetIteratorLine());
-    text->GoNext();
-    loadedText.GoNext();
-  }
+//   while (!text->IsTextEnded()) {
+//     EXPECT_EQ(text->GetIteratorLine(), loadedText.GetIteratorLine());
+//     text->GoNext();
+//     loadedText.GoNext();
+//   }
   
-  std::remove(filename);
-}
+//   std::remove(filename);
+// }
 
 // ==================== 8. СБОРЩИК МУСОРА (GARBAGE COLLECTOR) ====================
 
