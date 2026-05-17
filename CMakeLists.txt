@@ -10,3 +10,7 @@ add_subdirectory(core)
 # Консольное приложение
 add_executable(text main.cpp)
 target_link_libraries(text PRIVATE textcore)
+
+enable_testing()
+# Простейший тест: проверяем, что приложение запускается и успешно завершается
+add_test(NAME AppLaunchTest COMMAND $<TARGET_FILE:text>)
