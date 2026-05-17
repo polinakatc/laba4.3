@@ -12,7 +12,8 @@ typedef char TStr[TextLineLength];
 class TTextLink;
 typedef TTextLink *PTTextLink;
 
-class TTextMem {
+class TTextMem 
+{
 public:
     PTTextLink pFirst;
     PTTextLink pLast;
@@ -20,7 +21,8 @@ public:
     TTextMem() : pFirst(nullptr), pLast(nullptr), pFree(nullptr) {}
 };
 
-class TTextLink {
+class TTextLink 
+{
 protected:
     TStr Str;
     PTTextLink pNext;
@@ -52,4 +54,4 @@ public:
     friend class TText;
 };
 
-#endif // TTEXTLINK_H
+#endif 

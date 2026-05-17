@@ -3,18 +3,20 @@
 #include <sstream>
 #include <cstring>
 
-TTextUsercom::TTextUsercom() : running(false), currentFile("") {
-}
+TTextUsercom::TTextUsercom() : running(false), currentFile("") {}
 
-void TTextUsercom::EnsureRoot() {
-    if (text.pFirst == nullptr) {
+void TTextUsercom::EnsureRoot() 
+{
+    if (text.pFirst == nullptr) 
+    {
         PTTextLink root = new TTextLink("root");
         text = TText(root);
         text.GoFirstLink();
     }
 }
 
-void TTextUsercom::Help() {
+void TTextUsercom::Help() 
+{
     std::cout << "\n=== Команды редактора ===\n";
     std::cout << "  open <file>      - загрузить текст из файла\n";
     std::cout << "  save <file>      - сохранить текст в файл\n";
@@ -40,171 +42,216 @@ void TTextUsercom::Help() {
     std::cout << "================================\n\n";
 }
 
-void TTextUsercom::ParseAndExec(const std::string &cmd) {
+void TTextUsercom::ParseAndExec(const std::string &cmd) 
+{
     std::istringstream iss(cmd);
     std::string op;
     iss >> op;
 
-    // Авто-создание корня для команд, требующих текст
     if (op == "insdown" || op == "insdowns" || op == "insnext" || 
         op == "insnexts" || op == "set" || op == "first" || 
         op == "next" || op == "prev" || op == "down" || op == "show" ||
         op == "delnext" || op == "delnexts" || op == "deldown" || 
-        op == "deldowns" || op == "print") {
+        op == "deldowns" || op == "print") 
+    {
         EnsureRoot();
     }
 
-    if (op == "help") {
+    if (op == "help") 
+    {
         Help();
     }
-    else if (op == "quit" || op == "exit") {
+    else if (op == "quit" || op == "exit") 
+    {
         running = false;
         std::cout << "Выход.\n";
     }
-    else if (op == "open") {
+    else if (op == "open") 
+    {
         std::string filename;
         iss >> filename;
-        if (filename.empty()) {
+        if (filename.empty()) 
+        {
             std::cout << "Укажите имя файла: open <file>\n";
-        } else {
+        } 
+        else 
+        {
             text.Read(filename.c_str());
             currentFile = filename;
             std::cout << "Загружено из " << filename << "\n";
         }
     }
-    else if (op == "save") {
+    else if (op == "save") 
+    {
         std::string filename;
         iss >> filename;
-        if (filename.empty() && !currentFile.empty()) {
+        if (filename.empty() && !currentFile.empty()) 
+        {
             filename = currentFile;
         }
-        if (filename.empty()) {
+        if (filename.empty()) 
+        {
             std::cout << "Укажите имя файла: save <file>\n";
-        } else {
+        } 
+        else 
+        {
             text.Write(filename.c_str());
             currentFile = filename;
             std::cout << "Сохранено в " << filename << "\n";
         }
     }
-    else if (op == "print") {
+    else if (op == "print") 
+    {
         viewer.View(text);
     }
-    else if (op == "first") {
-        if (text.GoFirstLink()) {
+    else if (op == "first") 
+    {
+        if (text.GoFirstLink()) 
+        {
             std::cout << "OK\n";
-        } else {
+        } else 
+        {
             std::cout << "Текст пуст\n";
         }
     }
-    else if (op == "next") {
-        if (text.GoNextLink()) {
+    else if (op == "next") 
+    {
+        if (text.GoNextLink()) 
+        {
             std::cout << "OK: " << text.GetLine() << "\n";
-        } else {
+        } 
+        else
+        {
             std::cout << "Достигнут конец уровня\n";
         }
     }
-    else if (op == "prev") {
-        if (text.GoPrevLink()) {
+    else if (op == "prev") 
+    {
+        if (text.GoPrevLink())
+        {
             std::cout << "OK: " << text.GetLine() << "\n";
-        } else {
+        } 
+        else 
+        {
             std::cout << "Нет предыдущей позиции\n";
         }
     }
-    else if (op == "down") {
-        if (text.GoDownLink()) {
+    else if (op == "down") 
+    {
+        if (text.GoDownLink()) 
+        {
             std::cout << "OK: " << text.GetLine() << "\n";
-        } else {
+        } 
+        else 
+        {
             std::cout << "Нет подуровня или это атом\n";
         }
     }
-    else if (op == "show") {
+    else if (op == "show") 
+    {
         std::cout << "Текущая строка: [" << text.GetLine() << "]\n";
     }
-    else if (op == "set") {
+    else if (op == "set") 
+    {
         std::string line;
         std::getline(iss, line);
         if (!line.empty() && line[0] == ' ') line.erase(0, 1);
         text.SetLine(line);
         std::cout << "Заменено: " << line << "\n";
     }
-    else if (op == "insnext") {
+    else if (op == "insnext") 
+    {
         std::string line;
         std::getline(iss, line);
         if (!line.empty() && line[0] == ' ') line.erase(0, 1);
         text.InsNextLine(line);
         std::cout << "Вставлено: " << line << "\n";
     }
-    else if (op == "insdown") {
+    else if (op == "insdown") 
+    {
         std::string line;
         std::getline(iss, line);
         if (!line.empty() && line[0] == ' ') line.erase(0, 1);
         text.InsDownLine(line);
         std::cout << "Вставлено в подуровень: " << line << "\n";
     }
-    else if (op == "insnexts") {
+    else if (op == "insnexts") 
+    {
         std::string line;
         std::getline(iss, line);
         if (!line.empty() && line[0] == ' ') line.erase(0, 1);
         text.InsNextSection(line);
         std::cout << "Вставлен раздел: " << line << "\n";
     }
-    else if (op == "insdowns") {
+    else if (op == "insdowns") 
+    {
         std::string line;
         std::getline(iss, line);
         if (!line.empty() && line[0] == ' ') line.erase(0, 1);
         text.InsDownSection(line);
         std::cout << "Вставлен раздел в подуровень: " << line << "\n";
     }
-    else if (op == "delnext") {
+    else if (op == "delnext") 
+    {
         text.DelNextLine();
         std::cout << "Удалена следующая строка\n";
     }
-    else if (op == "delnexts") {
+    else if (op == "delnexts") 
+    {
         text.DelNextSection();
         std::cout << "Удалён следующий раздел\n";
     }
-    else if (op == "deldown") {
+    else if (op == "deldown") 
+    {
         text.DelDownLine();
         std::cout << "Удалена строка в подуровне\n";
     }
-    else if (op == "deldowns") {
+    else if (op == "deldowns") 
+    {
         text.DelDownSection();
         std::cout << "Удалён раздел в подуровне\n";
     }
-    else if (op == "iter") {
-        if (text.Reset()) {
+    else if (op == "iter") 
+    {
+        if (text.Reset()) 
+        {
             int count = 0;
-            while (!text.IsTextEnded()) {
+            while (!text.IsTextEnded()) 
+            {
                 ++count;
                 std::cout << "  [" << count << "] " << text.GetIteratorLine() << "\n";
                 text.GoNext();
             }
             std::cout << "Всего атомов: " << count << "\n";
-        } else {
+        } 
+        else 
+        {
             std::cout << "Текст пуст\n";
         }
     }
-    else if (op == "depth") {
+    else if (op == "depth") 
+    {
         int d;
         iss >> d;
         viewer.SetDepth(d);
         std::cout << "Глубина просмотра: " << d << "\n";
     }
-    else if (op.empty() || op[0] == '#') {
-        // пустая строка или комментарий
-    }
-    else {
+    else if (op.empty() || op[0] == '#') {}
+    else 
+    {
         std::cout << "Неизвестная команда: " << op << " (help — справка)\n";
     }
 }
 
-void TTextUsercom::Run() {
+void TTextUsercom::Run() 
+{
     running = true;
     std::cout << "=== Редактор иерархических текстов ===\n";
     std::cout << "Введите help для списка команд.\n\n";
     
     std::string line;
-    while (running) {
+    while (running) 
+    {
         std::cout << "> ";
         std::getline(std::cin, line);
         if (!std::cin) break;

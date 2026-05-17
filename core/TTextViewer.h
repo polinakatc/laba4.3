@@ -3,10 +3,10 @@
 
 #include "TText.h"
 
-class TTextViewer {
+class TTextViewer 
+{
 protected:
-    int maxDepth;  // максимальная глубина отображения (-1 = без ограничений)
-    
+    int maxDepth;  
     void PrintLevel(PTTextLink ptl, int currentDepth, int indent);
 
 public:
@@ -15,7 +15,7 @@ public:
     void SetDepth(int depth) { maxDepth = depth; }
     int  GetDepth() const { return maxDepth; }
     
-    void View(const TText &text);  // отображение текста
+    void View(const TText &text);
 };
 
-#endif // TTEXTVIEWER_H
+#endif 

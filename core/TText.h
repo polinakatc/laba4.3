@@ -6,7 +6,8 @@
 #include <fstream>
 #include "TTextLink.h"
 
-class TText {
+class TText 
+{
 protected:
     PTTextLink pFirst;                 // указатель корня дерева
     PTTextLink pCurrent;               // указатель текущей строки
@@ -28,17 +29,15 @@ public:
 
     PTTextLink GetCopy();          // копирование текста (возвращает корень копии)
 
-    // Навигация
+    // навигация
     int GoFirstLink();             // переход к первой строке
     int GoDownLink();              // переход к следующей строке по Down
     int GoNextLink();              // переход к следующей строке по Next
     int GoPrevLink();              // переход к предыдущей позиции в тексте
 
-    // Доступ
     std::string GetLine();         // чтение текущей строки
     void SetLine(std::string s);   // замена текущей строки
 
-    // Модификация
     void InsDownLine(std::string s);      // вставка строки в подуровень
     void InsDownSection(std::string s);   // вставка раздела в подуровень
     void InsNextLine(std::string s);      // вставка строки в том же уровне
@@ -50,16 +49,15 @@ public:
 
     // Итератор
     int Reset();                   // установить на первую запись
-    int IsTextEnded() const;       // текст завершен?
+    int IsTextEnded() const;       
     int GoNext();                  // переход к следующей записи
     std::string GetIteratorLine() const;  // получить строку текущего атома итератора
 
-    // Работа с файлами
+    // работа с файлами
     void Read(const char* pFileName);    // ввод текста из файла
     void Write(const char* pFileName);   // вывод текста в файл
 
-    // Печать
     void Print();                  // печать текста
 };
 
-#endif // TTEXT_H
+#endif 

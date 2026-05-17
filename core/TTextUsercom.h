@@ -5,7 +5,8 @@
 #include "TTextViewer.h"
 #include <string>
 
-class TTextUsercom {
+class TTextUsercom 
+{
 protected:
     TText text;
     TTextViewer viewer;
