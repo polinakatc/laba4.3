@@ -3,19 +3,22 @@
 
 #include "TText.h"
 
-class TTextViewer 
+class TTextViewer
 {
 protected:
-    int maxDepth;  
-    void PrintLevel(PTTextLink ptl, int currentDepth, int indent);
+  int maxDepth;
+  void PrintLevel(PTTextLink ptl, int currentDepth, int indent);
 
 public:
-    TTextViewer(int depth = -1) : maxDepth(depth) {}
-    
-    void SetDepth(int depth) { maxDepth = depth; }
-    int  GetDepth() const { return maxDepth; }
-    
-    void View(const TText &text);
+  TTextViewer(int depth = -1)
+    : maxDepth(depth)
+  {
+  }
+
+  void SetDepth(int depth) { maxDepth = depth; }
+  int GetDepth() const { return maxDepth; }
+
+  void View(const TText& text);
 };
 
-#endif 
+#endif

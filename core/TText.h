@@ -1,63 +1,63 @@
 #ifndef TTEXT_H
 #define TTEXT_H
 
+#include "TTextLink.h"
+#include <fstream>
 #include <stack>
 #include <string>
-#include <fstream>
-#include "TTextLink.h"
 
-class TText 
+class TText
 {
 protected:
-    PTTextLink pFirst;                 // указатель корня дерева
-    PTTextLink pCurrent;               // указатель текущей строки
-    std::stack<PTTextLink> Path;       // стек траектории движения по тексту
-    std::stack<PTTextLink> St;         // стек для итератора
+  PTTextLink pFirst;           // указатель корня дерева
+  PTTextLink pCurrent;         // указатель текущей строки
+  std::stack<PTTextLink> Path; // стек траектории движения по тексту
+  std::stack<PTTextLink> St;   // стек для итератора
 
-    PTTextLink GetFirstAtom(PTTextLink p1);           // поиск первого атома
-    void PrintText(PTTextLink ptl);                   // печать текста со звена ptl
-    PTTextLink ReadText(std::ifstream &TxtFile);      // чтение текста из файла
-    void DeleteSection(PTTextLink p);  // рекурсивное удаление раздела
+  PTTextLink GetFirstAtom(PTTextLink p1);      // поиск первого атома
+  void PrintText(PTTextLink ptl);              // печать текста со звена ptl
+  PTTextLink ReadText(std::ifstream& TxtFile); // чтение текста из файла
+  void DeleteSection(PTTextLink p);            // рекурсивное удаление раздела
 
-    friend class TTextLink;
-    friend class TTextViewer;
-    friend class TTextUsercom;
+  friend class TTextLink;
+  friend class TTextViewer;
+  friend class TTextUsercom;
 
 public:
-    TText(PTTextLink pl = nullptr);
-    ~TText() { pFirst = nullptr; }
+  TText(PTTextLink pl = nullptr);
+  ~TText() { pFirst = nullptr; }
 
-    PTTextLink GetCopy();          // копирование текста (возвращает корень копии)
+  PTTextLink GetCopy(); // копирование текста (возвращает корень копии)
 
-    // навигация
-    int GoFirstLink();             // переход к первой строке
-    int GoDownLink();              // переход к следующей строке по Down
-    int GoNextLink();              // переход к следующей строке по Next
-    int GoPrevLink();              // переход к предыдущей позиции в тексте
+  // навигация
+  int GoFirstLink(); // переход к первой строке
+  int GoDownLink();  // переход к следующей строке по Down
+  int GoNextLink();  // переход к следующей строке по Next
+  int GoPrevLink();  // переход к предыдущей позиции в тексте
 
-    std::string GetLine();         // чтение текущей строки
-    void SetLine(std::string s);   // замена текущей строки
+  std::string GetLine();       // чтение текущей строки
+  void SetLine(std::string s); // замена текущей строки
 
-    void InsDownLine(std::string s);      // вставка строки в подуровень
-    void InsDownSection(std::string s);   // вставка раздела в подуровень
-    void InsNextLine(std::string s);      // вставка строки в том же уровне
-    void InsNextSection(std::string s);   // вставка раздела в том же уровне
-    void DelDownLine();                   // удаление строки в подуровне
-    void DelDownSection();                // удаление раздела в подуровне
-    void DelNextLine();                   // удаление строки в том же уровне
-    void DelNextSection();                // удаление раздела в том же уровне
+  void InsDownLine(std::string s);    // вставка строки в подуровень
+  void InsDownSection(std::string s); // вставка раздела в подуровень
+  void InsNextLine(std::string s);    // вставка строки в том же уровне
+  void InsNextSection(std::string s); // вставка раздела в том же уровне
+  void DelDownLine();                 // удаление строки в подуровне
+  void DelDownSection();              // удаление раздела в подуровне
+  void DelNextLine();                 // удаление строки в том же уровне
+  void DelNextSection();              // удаление раздела в том же уровне
 
-    // Итератор
-    int Reset();                   // установить на первую запись
-    int IsTextEnded() const;       
-    int GoNext();                  // переход к следующей записи
-    std::string GetIteratorLine() const;  // получить строку текущего атома итератора
+  // Итератор
+  int Reset(); // установить на первую запись
+  int IsTextEnded() const;
+  int GoNext();                        // переход к следующей записи
+  std::string GetIteratorLine() const; // получить строку текущего атома итератора
 
-    // работа с файлами
-    void Read(const char* pFileName);    // ввод текста из файла
-    void Write(const char* pFileName);   // вывод текста в файл
+  // работа с файлами
+  void Read(const char* pFileName);  // ввод текста из файла
+  void Write(const char* pFileName); // вывод текста в файл
 
-    void Print();                  // печать текста
+  void Print(); // печать текста
 };
 
-#endif 
+#endif

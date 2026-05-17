@@ -5,21 +5,21 @@
 #include "TTextViewer.h"
 #include <string>
 
-class TTextUsercom 
+class TTextUsercom
 {
 protected:
-    TText text;
-    TTextViewer viewer;
-    std::string currentFile;
-    bool running;
+  TText text;
+  TTextViewer viewer;
+  std::string currentFile;
+  bool running;
 
-    void Help();
-    void ParseAndExec(const std::string &cmd);
-    void EnsureRoot();
+  void Help();
+  void ParseAndExec(const std::string& cmd);
+  void EnsureRoot();
 
 public:
-    TTextUsercom();
-    void Run();
+  TTextUsercom();
+  void Run();
 };
 
 #endif // TTEXTUSERCOM_H
