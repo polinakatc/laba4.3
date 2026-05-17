@@ -1,5 +1,8 @@
 #include "TTextLink.h"
+#include "TText.h"       // <-- добавить (полное определение TText)
+#include <stack>         // <-- добавить
 #include <cstring>
+#include <iostream>
 
 // ---------- Статический член ----------
 TTextMem TTextLink::MemHeader;
@@ -85,7 +88,46 @@ std::ostream& operator<<(std::ostream &os, const TTextLink &link) {
     return os;
 }
 
-// ---------- Сборка мусора (заглушка) ----------
+// ========== Сборка мусора ==========
 void TTextLink::MemCleaner(TText &txt) {
-    // Будет реализовано позже
+    if (MemHeader.pFirst == nullptr) return;
+    
+    int totalLinks = MemHeader.pLast - MemHeader.pFirst;
+    
+    // Массив флагов маркировки
+    bool *marked = new bool[totalLinks]();
+    
+    // ---------- Этап 1: рекурсивная маркировка всех используемых звеньев ----------
+    struct Helper {
+        static void MarkAll(PTTextLink p, PTTextLink first, bool *m, int total) {
+            if (p == nullptr) return;
+            int idx = p - first;
+            if (idx >= 0 && idx < total) m[idx] = true;
+            MarkAll(p->GetDown(), first, m, total);
+            MarkAll(p->GetNext(), first, m, total);
+        }
+    };
+    Helper::MarkAll(txt.pFirst, MemHeader.pFirst, marked, totalLinks);
+    
+    // ---------- Этап 2: маркировка уже свободных звеньев ----------
+    PTTextLink freeLink = MemHeader.pFree;
+    while (freeLink != nullptr) {
+        int index = freeLink - MemHeader.pFirst;
+        if (index >= 0 && index < totalLinks) {
+            marked[index] = true;
+        }
+        freeLink = freeLink->pNext;
+    }
+    
+    // ---------- Этап 3: возврат неотмеченных в список свободных ----------
+    for (int i = 0; i < totalLinks; ++i) {
+        if (!marked[i]) {
+            PTTextLink p = MemHeader.pFirst + i;
+            p->Clear();
+            p->pNext = MemHeader.pFree;
+            MemHeader.pFree = p;
+        }
+    }
+    
+    delete[] marked;
 }

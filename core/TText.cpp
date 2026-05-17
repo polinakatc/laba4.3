@@ -339,7 +339,71 @@ void TText::DeleteSection(PTTextLink p) {
     delete p;
 }
 
-// ========== Заглушки итератора (Этап 4) ==========
-int TText::Reset()             { return 0; }
-int TText::IsTextEnded() const { return 0; }
-int TText::GoNext()            { return 0; }
+// ========== Итератор (обход TDN: Top → Down → Next) ==========
+
+// Инициализация: установка на первый атом текста
+int TText::Reset() {
+    // Очищаем стек итератора
+    while (!St.empty()) St.pop();
+    
+    if (pFirst == nullptr) return 0;
+    
+    // Начинаем с корня, спускаемся до первого атома
+    PTTextLink p = pFirst;
+    St.push(p);
+    while (p != nullptr && !p->IsAtom()) {
+        p = p->GetDown();
+        St.push(p);
+    }
+    // pCurrent не меняем — итератор работает независимо от навигации
+    return 1;
+}
+
+// Проверка завершения обхода
+int TText::IsTextEnded() const {
+    return St.empty() ? 1 : 0;
+}
+
+// Переход к следующему атому (схема TDN)
+int TText::GoNext() {
+    if (St.empty()) return 0;
+    
+    // Снимаем текущий атом со стека
+    PTTextLink p = St.top();
+    St.pop();
+    
+    // Пробуем пойти вправо (Next)
+    if (p->GetNext() != nullptr) {
+        p = p->GetNext();
+        St.push(p);
+        // Спускаемся до атома
+        while (!p->IsAtom()) {
+            p = p->GetDown();
+            St.push(p);
+        }
+        return 1;
+    }
+    
+    // Next нет — поднимаемся по стеку, пока не найдём уровень с Next
+    while (!St.empty()) {
+        p = St.top();
+        St.pop();
+        if (p->GetNext() != nullptr) {
+            p = p->GetNext();
+            St.push(p);
+            while (!p->IsAtom()) {
+                p = p->GetDown();
+                St.push(p);
+            }
+            return 1;
+        }
+    }
+    
+    // Стек пуст — обход завершён
+    return 0;
+}
+
+std::string TText::GetIteratorLine() const {
+    if (St.empty()) return "";
+    return std::string(St.top()->GetStr());
+}

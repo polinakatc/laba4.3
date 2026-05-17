@@ -18,6 +18,10 @@ protected:
     PTTextLink ReadText(std::ifstream &TxtFile);      // чтение текста из файла
     void DeleteSection(PTTextLink p);  // рекурсивное удаление раздела
 
+    friend class TTextLink;
+    friend class TTextViewer;
+    friend class TTextUsercom;
+
 public:
     TText(PTTextLink pl = nullptr);
     ~TText() { pFirst = nullptr; }
@@ -48,6 +52,7 @@ public:
     int Reset();                   // установить на первую запись
     int IsTextEnded() const;       // текст завершен?
     int GoNext();                  // переход к следующей записи
+    std::string GetIteratorLine() const;  // получить строку текущего атома итератора
 
     // Работа с файлами
     void Read(const char* pFileName);    // ввод текста из файла
