@@ -46,9 +46,7 @@ void TTextLink::PrintFreeLink()
 void* TTextLink::operator new(size_t size)
 {
   if (MemHeader.pFree == nullptr)
-  {
     throw std::bad_alloc();
-  }
   PTTextLink p = MemHeader.pFree;
   MemHeader.pFree = p->pNext;
   return p;
@@ -116,9 +114,7 @@ void TTextLink::MemCleaner(TText& txt)
   {
     int index = freeLink - MemHeader.pFirst;
     if (index >= 0 && index < totalLinks)
-    {
       marked[index] = true;
-    }
     freeLink = freeLink->pNext;
   }
 

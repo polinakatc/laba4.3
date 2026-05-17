@@ -17,9 +17,7 @@ PTTextLink TText::GetFirstAtom(PTTextLink p1)
     return nullptr;
   PTTextLink p = p1;
   while (p != nullptr && !p->IsAtom())
-  {
     p = p->GetDown();
-  }
   return p;
 }
 
@@ -34,9 +32,7 @@ void TText::PrintText(PTTextLink ptl)
       PrintText(p->GetDown());
     }
     else
-    {
       std::cout << p->GetStr() << std::endl;
-    }
     p = p->GetNext();
   }
 }
@@ -73,13 +69,9 @@ PTTextLink TText::ReadText(std::ifstream& TxtFile)
     }
 
     if (pFirstLocal == nullptr)
-    {
       pFirstLocal = pNew;
-    }
     else
-    {
       pLast->SetNext(pNew);
-    }
     pLast = pNew;
   }
   return pFirstLocal;
@@ -103,9 +95,7 @@ void TText::Read(const char* pFileName)
   pFirst = ReadText(file);
   pCurrent = pFirst;
   if (pCurrent != nullptr)
-  {
     Path.push(pCurrent);
-  }
   file.close();
 }
 
@@ -120,9 +110,7 @@ static void WriteTextFunc(std::ofstream& file, PTTextLink ptl)
       WriteTextFunc(file, p->GetDown());
     }
     else
-    {
       file << p->GetStr() << std::endl;
-    }
     p = p->GetNext();
   }
 }
@@ -156,9 +144,7 @@ int TText::GoFirstLink()
       Path.push(p);
     }
     else
-    {
       break;
-    }
   }
   pCurrent = p;
   return 1;
@@ -216,13 +202,9 @@ static PTTextLink CopyLinkFunc(PTTextLink src)
     return nullptr;
   PTTextLink copy = new TTextLink(src->GetStr());
   if (src->GetNext() != nullptr)
-  {
     copy->SetNext(CopyLinkFunc(src->GetNext()));
-  }
   if (src->GetDown() != nullptr)
-  {
     copy->SetDown(CopyLinkFunc(src->GetDown()));
-  }
   return copy;
 }
 
@@ -248,17 +230,13 @@ void TText::InsDownLine(std::string s)
   PTTextLink pNew = new TTextLink(s.c_str());
 
   if (pCurrent->IsAtom())
-  {
     pCurrent->SetDown(pNew);
-  }
   else
   {
     // идём в конец подуровня
     PTTextLink p = pCurrent->GetDown();
     while (p->GetNext() != nullptr)
-    {
       p = p->GetNext();
-    }
     p->SetNext(pNew);
   }
 }
@@ -280,22 +258,16 @@ void TText::InsDownSection(std::string s)
   PTTextLink pNew = new TTextLink(s.c_str(), nullptr, nullptr);
 
   if (pCurrent->IsAtom())
-  {
     pCurrent->SetDown(pNew);
-  }
   else
   {
     PTTextLink p = pCurrent->GetDown();
     if (p == nullptr)
-    {
       pCurrent->SetDown(pNew);
-    }
     else
     {
       while (p->GetNext() != nullptr)
-      {
         p = p->GetNext();
-      }
       p->SetNext(pNew);
     }
   }
@@ -386,9 +358,7 @@ void TText::DeleteSection(PTTextLink p)
   {
     PTTextLink next = down->GetNext();
     if (!down->IsAtom())
-    {
       DeleteSection(down);
-    }
     delete down;
     down = next;
   }

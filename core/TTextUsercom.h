@@ -19,6 +19,7 @@ protected:
 
 public:
   TTextUsercom();
+  void Clean();
   void Run();
 };
 

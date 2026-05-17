@@ -9,6 +9,11 @@ TTextUsercom::TTextUsercom()
 {
 }
 
+void TTextUsercom::Clean()
+{
+  system("clear");
+}
+
 void TTextUsercom::EnsureRoot()
 {
   if (text.pFirst == nullptr)
@@ -41,6 +46,7 @@ void TTextUsercom::Help()
   std::cout << "  deldowns         - удалить раздел в подуровне\n";
   std::cout << "  iter             - обход итератором\n";
   std::cout << "  depth <число>    - глубина просмотра (-1 = вся)\n";
+  std::cout << "  clean            - очистить консоль\n";
   std::cout << "  help             - справка\n";
   std::cout << "  quit             - выход\n";
   std::cout << "================================\n\n";
@@ -48,6 +54,7 @@ void TTextUsercom::Help()
 
 void TTextUsercom::ParseAndExec(const std::string& cmd)
 {
+  Clean();
   std::istringstream iss(cmd);
   std::string op;
   iss >> op;
@@ -60,9 +67,9 @@ void TTextUsercom::ParseAndExec(const std::string& cmd)
   }
 
   if (op == "help")
-  {
     Help();
-  }
+  else if (op == "clean" || op == "cls")
+    Clean();
   else if (op == "quit" || op == "exit")
   {
     running = false;
@@ -88,13 +95,9 @@ void TTextUsercom::ParseAndExec(const std::string& cmd)
     std::string filename;
     iss >> filename;
     if (filename.empty() && !currentFile.empty())
-    {
       filename = currentFile;
-    }
     if (filename.empty())
-    {
       std::cout << "Укажите имя файла: save <file>\n";
-    }
     else
     {
       text.Write(filename.c_str());
@@ -103,57 +106,29 @@ void TTextUsercom::ParseAndExec(const std::string& cmd)
     }
   }
   else if (op == "print")
-  {
     viewer.View(text);
-  }
   else if (op == "first")
-  {
     if (text.GoFirstLink())
-    {
       std::cout << "OK\n";
-    }
     else
-    {
       std::cout << "Текст пуст\n";
-    }
-  }
   else if (op == "next")
-  {
     if (text.GoNextLink())
-    {
       std::cout << "OK: " << text.GetLine() << "\n";
-    }
     else
-    {
       std::cout << "Достигнут конец уровня\n";
-    }
-  }
   else if (op == "prev")
-  {
     if (text.GoPrevLink())
-    {
       std::cout << "OK: " << text.GetLine() << "\n";
-    }
     else
-    {
       std::cout << "Нет предыдущей позиции\n";
-    }
-  }
   else if (op == "down")
-  {
     if (text.GoDownLink())
-    {
       std::cout << "OK: " << text.GetLine() << "\n";
-    }
     else
-    {
       std::cout << "Нет подуровня или это атом\n";
-    }
-  }
   else if (op == "show")
-  {
     std::cout << "Текущая строка: [" << text.GetLine() << "]\n";
-  }
   else if (op == "set")
   {
     std::string line;
@@ -233,9 +208,7 @@ void TTextUsercom::ParseAndExec(const std::string& cmd)
       std::cout << "Всего атомов: " << count << "\n";
     }
     else
-    {
       std::cout << "Текст пуст\n";
-    }
   }
   else if (op == "depth")
   {
@@ -248,14 +221,13 @@ void TTextUsercom::ParseAndExec(const std::string& cmd)
   {
   }
   else
-  {
     std::cout << "Неизвестная команда: " << op << " (help — справка)\n";
-  }
 }
 
 void TTextUsercom::Run()
 {
   running = true;
+  Clean();
   std::cout << "=== Редактор иерархических текстов ===\n";
   std::cout << "Введите help для списка команд.\n\n";
 
