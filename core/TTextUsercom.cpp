@@ -2,6 +2,8 @@
 #include <cstring>
 #include <iostream>
 #include <sstream>
+#include <unistd.h>
+#include <termios.h>
 
 TTextUsercom::TTextUsercom()
   : running(false)
@@ -11,7 +13,8 @@ TTextUsercom::TTextUsercom()
 
 void TTextUsercom::Clean()
 {
-  system("clear");
+  std::cout << "\033[2J\033[H" << std::flush;
+  std::cout << "\n======================================\n";
 }
 
 void TTextUsercom::EnsureRoot()
@@ -234,10 +237,87 @@ void TTextUsercom::Run()
   std::string line;
   while (running)
   {
-    std::cout << "> ";
-    std::getline(std::cin, line);
-    if (!std::cin)
-      break;
+    std::cout << "> " << std::flush;
+    line = ReadCommandWithHistory();
     ParseAndExec(line);
   }
+}
+
+std::string TTextUsercom::ReadCommandWithHistory()
+{
+  struct termios oldt, newt;
+  tcgetattr(STDIN_FILENO, &oldt);
+  newt = oldt;
+  newt.c_lflag &= ~(ICANON | ECHO); // Отключаем буферизацию и авто-вывод символов
+  tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+
+  std::string currentInput = "";
+  int historyIndex = history.size();
+
+  while (true)
+  {
+    int c = getchar();
+    if (c == EOF)
+      break;
+
+    if (c == '\n' || c == '\r') // Нажат Enter
+    {
+      std::cout << '\n';
+      break;
+    }
+    else if (c == 127 || c == 8) // Нажат Backspace
+    {
+      if (!currentInput.empty())
+      {
+        currentInput.pop_back();
+        // Затираем символ на экране (\b шаг назад, пробел стирает, \b шаг назад)
+        std::cout << "\b \b"; 
+      }
+    }
+    else if (c == 27) // Нажат Escape (начало спец-кода стрелочек)
+    {
+      c = getchar();
+      if (c == 91) // '['
+      {
+        c = getchar();
+        if (c == 65) // 'A' -> Стрелка ВВЕРХ
+        {
+          if (historyIndex > 0)
+          {
+            historyIndex--;
+            currentInput = history[historyIndex];
+            // \r - в начало строки, \033[2K - очистить всю строку, печатаем "> " и команду
+            std::cout << "\r\033[2K> " << currentInput;
+          }
+        }
+        else if (c == 66)
+        {
+          if (historyIndex < (int)history.size() - 1)
+          {
+            historyIndex++;
+            currentInput = history[historyIndex];
+            std::cout << "\r\033[2K> " << currentInput;
+          }
+          else if (historyIndex == (int)history.size() - 1)
+          {
+            historyIndex++;
+            currentInput = "";
+            std::cout << "\r\033[2K> ";
+          }
+        }
+      }
+    }
+    else if (c >= 32 && c <= 126) 
+    {
+      currentInput += (char)c;
+      std::cout << (char)c;
+    }
+  }
+
+  tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+
+  if (!currentInput.empty() && (history.empty() || history.back() != currentInput))  
+    history.push_back(currentInput);
+
+  return currentInput;
 }
