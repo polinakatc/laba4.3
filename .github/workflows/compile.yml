@@ -7,18 +7,28 @@ on:
     branches: ["main", "master"]
 
 jobs:
-  build:
+  build-and-test:
+    name: 🚀 Сборка и Тестирование (Ubuntu)
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: 📂 Клонирование репозитория
         uses: actions/checkout@v4
 
-      - name: Build and Test
-        # Реализация классического цикла сборки: mkdir, cd, cmake, make
+      - name: ⚙️ Конфигурация проекта (CMake)
+        # Современный подход: задаем папку сборки через -B без ручного mkdir и cd
+        run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+
+      - name: 🛠️ Компиляция исходного кода
+        # build-system agnostic команда сборки
+        run: cmake --build build --config Release --parallel $(nproc)
+
+      - name: 🧪 Запуск модульных тестов (GTest)
         run: |
-          mkdir build
           cd build
-          cmake ..
-          make
+          ./test
+
+      - name: 🖥️ Запуск демонстрационной программы
+        run: |
+          cd build
           ./text
