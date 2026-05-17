@@ -8,7 +8,6 @@ build/
 *.obj
 
 # Файлы IDE
-.vscode/
 .idea/
 *.swp
 *.swo
